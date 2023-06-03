@@ -59,20 +59,25 @@ class FormatBase {
 
 }
 
+interface DataInf{
+    name?:string | number;
+    value:number;
+}
 
 
 class VisualiseBase extends FormatBase {
 
+
     constructor (designSetting:DesignSetting) {
-        super(designSetting)
+        super(designSetting);
     }
 
 
-    public toBar(values:number[]):void {
+    public toBar(values:DataInf[]):void {
         const SYMBOL:string = "#";
 
-        this._outData = values.map((value):Line => { 
-            return {contents: [Array(value + 1).join(SYMBOL)]}
+        this._outData = values.map((valueInf):Line => { 
+            return {contents: [Array(valueInf.value + 1).join(SYMBOL)]}
         })
     }
 
@@ -80,9 +85,9 @@ class VisualiseBase extends FormatBase {
 }
 
 
-var testData = [
-    1,5,9,3
-]
+var testData:DataInf[] = [
+    1,9,11,4
+].map(value => ({value: value}))
 
 var base = new VisualiseBase({
     header:undefined,

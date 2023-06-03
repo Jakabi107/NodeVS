@@ -13,29 +13,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var BaseVisual = /** @class */ (function () {
-    function BaseVisual(_data) {
-        this._data = _data;
-        this._flatened = this.flat();
-    }
-    BaseVisual.prototype.flat = function () {
-        var max = Math.max.apply(null, this._data);
-        return this._data.map(function (element) { return element / max; });
-    };
-    BaseVisual.prototype.toRange = function (rangeValue) {
-        return this._flatened.map(function (value) { return Math.floor(value * rangeValue); });
-    };
-    BaseVisual.prototype.toString = function (range) {
-        var SYMBOL = "#";
-        var arr = this.toRange(range);
-        return arr.map(function (value) { return Array(value + 1).join(SYMBOL); });
-    };
-    BaseVisual.prototype.printOut = function () {
-        var RANGE = 100;
-        console.log("\n|" + this.toString(RANGE).join("\n|") + "\n");
-    };
-    return BaseVisual;
-}());
 var FormatBase = /** @class */ (function () {
     function FormatBase(_designSetting) {
         this._designSetting = _designSetting;
@@ -71,6 +48,7 @@ var FormatBase = /** @class */ (function () {
     };
     return FormatBase;
 }());
+;
 var VisualiseBase = /** @class */ (function (_super) {
     __extends(VisualiseBase, _super);
     function VisualiseBase(designSetting) {
@@ -78,15 +56,15 @@ var VisualiseBase = /** @class */ (function (_super) {
     }
     VisualiseBase.prototype.toBar = function (values) {
         var SYMBOL = "#";
-        this._outData = values.map(function (value) {
-            return { contents: [Array(value + 1).join(SYMBOL)] };
+        this._outData = values.map(function (valueInf) {
+            return { contents: [Array(valueInf.value + 1).join(SYMBOL)] };
         });
     };
     return VisualiseBase;
 }(FormatBase));
 var testData = [
-    1, 5, 9, 3
-];
+    1, 9, 11, 4
+].map(function (value) { return ({ value: value }); });
 var base = new VisualiseBase({
     header: undefined,
     footer: undefined,
