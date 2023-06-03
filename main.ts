@@ -1,9 +1,9 @@
 
-class DataVisual {
+class BaseVisual {
 
     private _flatened:number[]
 
-    constructor(private _data:number[]){
+    constructor(private _data:number[] | string[]){
         this._flatened = this.flat();
     }
 
@@ -36,12 +36,72 @@ class DataVisual {
 
 }
 
+interface DesignSetting {
+    header?:string;
+    footer?:string;
+    lnstart?:string;
+    lnend?:string;
+    seperator?:string;
+}
+
+interface Line {
+    contents:string[];
+}
+
+class Base {
+
+    protected _outData:Line[];
+
+
+    private _STANDART:DesignSetting = {
+        header:"",
+        footer:"",
+        lnstart:"|",
+        lnend:"",
+        seperator:"|"
+    }
+
+
+    constructor (private _designSetting:DesignSetting){
+        this.standartiseSettings();
+    }
+
+    //Note: point for implementing feature with formating header
+    private standartiseSettings():void{
+
+        let keys = Object.keys(this._designSetting);
+        keys.forEach(key => {
+            if (!this._designSetting[key]) this._designSetting[key] = this._STANDART[key];
+        });
+
+    }
+
+
+    private formatLine(ln:Line):string{
+        return this._designSetting.lnstart + ln.contents.join(this._designSetting.seperator) + this._designSetting.lnend;
+    }
+
+    
+    private formatAll(data:Line[]):string{
+        let text:string = data.map(ln => (this.formatLine(ln))).join("\n");
+
+        return `${this._designSetting.header}\n${text}\n${this._designSetting.footer}`;
+    }
+
+
+
+    public printOut():void {
+        console.log(this.formatAll(this._outData))
+    }
+
+}
+
 
 var testData = [
-    1,5,9,3,1,99
+    1,5,9,3
 ]
 
-var test = new DataVisual(testData);
+var test = new BaseVisual(testData);
 
 test.printOut();
 

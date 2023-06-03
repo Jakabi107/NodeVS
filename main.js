@@ -22,7 +22,7 @@ var DataVisual = /** @class */ (function () {
     return DataVisual;
 }());
 var testData = [
-    1, 5, 9, 3, 1, 99
+    1, 5, 9, 3, 100
 ];
 var test = new DataVisual(testData);
 test.printOut();
