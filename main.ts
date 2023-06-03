@@ -1,58 +1,20 @@
 
-class BaseVisual {
-
-    private _flatened:number[]
-
-    constructor(private _data:number[] | string[]){
-        this._flatened = this.flat();
-    }
-
-
-    private flat():number[] {
-        let max = Math.max.apply(null, this._data);
-
-        return this._data.map(element => {return element/max});
-    }
-
-    
-    private toRange(rangeValue:number):number[] {
-        return this._flatened.map(value => {return Math.floor( value * rangeValue )});
-    }
-
-
-    private toString(range:number):string[] {
-        const SYMBOL:string = "#";
-        let arr:number[] = this.toRange(range);
-
-        return arr.map(value => {return Array(value + 1).join(SYMBOL)});
-    }
-
-
-    public printOut():void {
-        const RANGE:number = 100; 
-
-        console.log("\n|" + this.toString(RANGE).join("\n|") + "\n");
-    }
-
-}
-
 interface DesignSetting {
-    header?:string;
-    footer?:string;
-    lnstart?:string;
-    lnend?:string;
-    seperator?:string;
+    header:string | undefined;
+    footer:string | undefined;
+    lnstart:string | undefined;
+    lnend:string | undefined;
+    seperator:string | undefined;
 }
 
 interface Line {
     contents:string[];
 }
 
-class Base {
+class FormatBase {
 
-    protected _outData:Line[];
-
-
+    protected _outData:Line[] = [{contents:["Hello","world"]}];
+    
     private _STANDART:DesignSetting = {
         header:"",
         footer:"",
@@ -64,12 +26,13 @@ class Base {
 
     constructor (private _designSetting:DesignSetting){
         this.standartiseSettings();
+
     }
 
     //Note: point for implementing feature with formating header
     private standartiseSettings():void{
 
-        let keys = Object.keys(this._designSetting);
+        let keys = Object.keys(this._designSetting)
         keys.forEach(key => {
             if (!this._designSetting[key]) this._designSetting[key] = this._STANDART[key];
         });
@@ -97,11 +60,38 @@ class Base {
 }
 
 
+
+class VisualiseBase extends FormatBase {
+
+    constructor (designSetting:DesignSetting) {
+        super(designSetting)
+    }
+
+
+    public toBar(values:number[]):void {
+        const SYMBOL:string = "#";
+
+        this._outData = values.map((value):Line => { 
+            return {contents: [Array(value + 1).join(SYMBOL)]}
+        })
+    }
+
+
+}
+
+
 var testData = [
     1,5,9,3
 ]
 
-var test = new BaseVisual(testData);
+var base = new VisualiseBase({
+    header:undefined,
+    footer:undefined,
+    lnend:undefined,
+    lnstart:undefined,
+    seperator:undefined
+});
 
-test.printOut();
+base.toBar(testData);
+base.printOut();
 
