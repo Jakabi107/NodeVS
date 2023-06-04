@@ -83,6 +83,12 @@ class VisualiseBase extends FormatBase {
         })
     }
 
+    public toText():void {
+        this._outData = this._rawData.map((valueInf):Line => {
+            return {contents: [valueInf.name , String(valueInf.value)]};
+        })
+    }
+
 
 }
 
@@ -131,5 +137,6 @@ var base = new FrequencyVisualise({
     seperator:undefined
 }, testData);
 
+base.toBar()
 
 base.printOut()

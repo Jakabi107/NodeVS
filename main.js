@@ -53,10 +53,15 @@ var VisualiseBase = /** @class */ (function (_super) {
     function VisualiseBase(designSetting) {
         return _super.call(this, designSetting) || this;
     }
-    VisualiseBase.prototype.toBar = function (values) {
+    VisualiseBase.prototype.toBar = function () {
         var SYMBOL = "#";
-        this._outData = values.map(function (valueInf) {
+        this._outData = this._rawData.map(function (valueInf) {
             return valueInf.name ? { contents: [valueInf.name, Array(valueInf.value + 1).join(SYMBOL)] } : { contents: [Array(valueInf.value + 1).join(SYMBOL)] };
+        });
+    };
+    VisualiseBase.prototype.toText = function () {
+        this._outData = this._rawData.map(function (valueInf) {
+            return { contents: [valueInf.name, String(valueInf.value)] };
         });
     };
     return VisualiseBase;
@@ -66,7 +71,7 @@ var FrequencyVisualise = /** @class */ (function (_super) {
     function FrequencyVisualise(designSetting, _data) {
         var _this = _super.call(this, designSetting) || this;
         _this._data = _data;
-        _this.toBar(_this.dictToDataInf(_this.calculateFrequency()));
+        _this._rawData = _this.dictToDataInf(_this.calculateFrequency());
         return _this;
     }
     FrequencyVisualise.prototype.calculateFrequency = function () {
@@ -98,4 +103,5 @@ var base = new FrequencyVisualise({
     lnstart: undefined,
     seperator: undefined
 }, testData);
+base.toBar();
 base.printOut();
