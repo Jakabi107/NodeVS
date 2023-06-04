@@ -79,7 +79,7 @@ class VisualiseBase extends FormatBase {
         const SYMBOL:string = "#";
 
         this._outData = this._rawData.map((valueInf):Line => {
-            return valueInf.name ? {contents: [valueInf.name, Array(valueInf.value + 1).join(SYMBOL)]} : {contents: [Array(valueInf.value + 1).join(SYMBOL)]};
+            return valueInf.name != undefined ? {contents: [valueInf.name, Array(valueInf.value + 1).join(SYMBOL)]} : {contents: [Array(valueInf.value + 1).join(SYMBOL)]};
         })
     }
 
@@ -125,11 +125,38 @@ class FrequencyVisualise extends VisualiseBase {
 }
 
 
+class IndividualVisualise extends VisualiseBase {
+
+    constructor (designSetting:DesignSetting, private _data:string[] | number[]) {
+        super(designSetting);
+        this._rawData = this.dataToDataInf();
+    }
+
+
+    private dataToDataInf():DataInf[] {
+        return this._data.map((value, i):DataInf => {
+            return {name:i, value:value};
+        });
+    }
+
+}
+
+
+interface Options {
+    design?:DesignSetting;
+      
+}
+
+class Visualiser {
+
+}
+
+
 var testData:number[] = [
     1,9,1,4,1,1,1,1,1,9
 ]
 
-var base = new FrequencyVisualise({
+var base = new IndividualVisualise({
     header:undefined,
     footer:undefined,
     lnend:undefined,

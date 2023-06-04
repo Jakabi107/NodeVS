@@ -56,7 +56,7 @@ var VisualiseBase = /** @class */ (function (_super) {
     VisualiseBase.prototype.toBar = function () {
         var SYMBOL = "#";
         this._outData = this._rawData.map(function (valueInf) {
-            return valueInf.name ? { contents: [valueInf.name, Array(valueInf.value + 1).join(SYMBOL)] } : { contents: [Array(valueInf.value + 1).join(SYMBOL)] };
+            return valueInf.name != undefined ? { contents: [valueInf.name, Array(valueInf.value + 1).join(SYMBOL)] } : { contents: [Array(valueInf.value + 1).join(SYMBOL)] };
         });
     };
     VisualiseBase.prototype.toText = function () {
@@ -93,10 +93,25 @@ var FrequencyVisualise = /** @class */ (function (_super) {
     };
     return FrequencyVisualise;
 }(VisualiseBase));
+var IndividualVisualise = /** @class */ (function (_super) {
+    __extends(IndividualVisualise, _super);
+    function IndividualVisualise(designSetting, _data) {
+        var _this = _super.call(this, designSetting) || this;
+        _this._data = _data;
+        _this._rawData = _this.dataToDataInf();
+        return _this;
+    }
+    IndividualVisualise.prototype.dataToDataInf = function () {
+        return this._data.map(function (value, i) {
+            return { name: i, value: value };
+        });
+    };
+    return IndividualVisualise;
+}(VisualiseBase));
 var testData = [
     1, 9, 1, 4, 1, 1, 1, 1, 1, 9
 ];
-var base = new FrequencyVisualise({
+var base = new IndividualVisualise({
     header: undefined,
     footer: undefined,
     lnend: undefined,
