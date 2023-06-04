@@ -48,7 +48,6 @@ var FormatBase = /** @class */ (function () {
     };
     return FormatBase;
 }());
-;
 var VisualiseBase = /** @class */ (function (_super) {
     __extends(VisualiseBase, _super);
     function VisualiseBase(designSetting) {
@@ -57,20 +56,46 @@ var VisualiseBase = /** @class */ (function (_super) {
     VisualiseBase.prototype.toBar = function (values) {
         var SYMBOL = "#";
         this._outData = values.map(function (valueInf) {
-            return { contents: [Array(valueInf.value + 1).join(SYMBOL)] };
+            return valueInf.name ? { contents: [valueInf.name, Array(valueInf.value + 1).join(SYMBOL)] } : { contents: [Array(valueInf.value + 1).join(SYMBOL)] };
         });
     };
     return VisualiseBase;
 }(FormatBase));
+var FrequencyVisualise = /** @class */ (function (_super) {
+    __extends(FrequencyVisualise, _super);
+    function FrequencyVisualise(designSetting, _data) {
+        var _this = _super.call(this, designSetting) || this;
+        _this._data = _data;
+        _this.toBar(_this.dictToDataInf(_this.calculateFrequency()));
+        return _this;
+    }
+    FrequencyVisualise.prototype.calculateFrequency = function () {
+        var dict = {};
+        this._data.forEach(function (value) {
+            var strValue = String(value);
+            if (dict[value])
+                dict[value]++;
+            else
+                dict[value] = 1;
+        });
+        return dict;
+    };
+    FrequencyVisualise.prototype.dictToDataInf = function (dict) {
+        var keys = Object.keys(dict);
+        return keys.map(function (key) {
+            return { name: key, value: dict[key] };
+        });
+    };
+    return FrequencyVisualise;
+}(VisualiseBase));
 var testData = [
-    1, 9, 11, 4
-].map(function (value) { return ({ value: value }); });
-var base = new VisualiseBase({
+    1, 9, 1, 4, 1, 1, 1, 1, 1, 9
+];
+var base = new FrequencyVisualise({
     header: undefined,
     footer: undefined,
     lnend: undefined,
     lnstart: undefined,
     seperator: undefined
-});
-base.toBar(testData);
+}, testData);
 base.printOut();

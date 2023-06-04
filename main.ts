@@ -59,25 +59,27 @@ class FormatBase {
 
 }
 
+
 interface DataInf{
-    name?:string | number;
+    name?:string;
     value:number;
 }
 
 
 class VisualiseBase extends FormatBase {
 
+    protected _rawData:DataInf[];
 
     constructor (designSetting:DesignSetting) {
         super(designSetting);
     }
 
 
-    public toBar(values:DataInf[]):void {
+    public toBar():void {
         const SYMBOL:string = "#";
 
-        this._outData = values.map((valueInf):Line => { 
-            return {contents: [Array(valueInf.value + 1).join(SYMBOL)]}
+        this._outData = this._rawData.map((valueInf):Line => {
+            return valueInf.name ? {contents: [valueInf.name, Array(valueInf.value + 1).join(SYMBOL)]} : {contents: [Array(valueInf.value + 1).join(SYMBOL)]};
         })
     }
 
@@ -85,18 +87,49 @@ class VisualiseBase extends FormatBase {
 }
 
 
-var testData:DataInf[] = [
-    1,9,11,4
-].map(value => ({value: value}))
+class FrequencyVisualise extends VisualiseBase {
 
-var base = new VisualiseBase({
+    constructor (designSetting:DesignSetting, private _data:string[] | number[]) {
+        super(designSetting);
+        this._rawData = this.dictToDataInf(this.calculateFrequency());
+    }
+
+    
+    private calculateFrequency():object{
+        let dict:object = {}
+
+        this._data.forEach(value => {
+            let strValue = String(value);
+            if (dict[value]) dict[value] ++;
+            else dict[value] = 1;
+        });
+
+        return dict;
+    }
+
+
+    private dictToDataInf(dict:object):DataInf[]{
+        let keys = Object.keys(dict);
+
+        return keys.map(key =>{
+            return {name:key, value:dict[key]};
+        })
+    }
+
+}
+
+
+var testData:number[] = [
+    1,9,1,4,1,1,1,1,1,9
+]
+
+var base = new FrequencyVisualise({
     header:undefined,
     footer:undefined,
     lnend:undefined,
     lnstart:undefined,
     seperator:undefined
-});
+}, testData);
 
-base.toBar(testData);
-base.printOut();
 
+base.printOut()
