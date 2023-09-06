@@ -1,2 +1,2 @@
 # NodeVS
-A framework for visualising data in Node.js.
+A helping tool for visualising data in Node.js. (unfinished)
